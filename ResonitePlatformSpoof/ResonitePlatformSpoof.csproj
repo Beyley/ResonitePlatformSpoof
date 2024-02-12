@@ -20,20 +20,26 @@
     <DebugSymbols Condition="'$(Configuration)'=='Release'">false</DebugSymbols>
     <DebugType Condition="'$(Configuration)'=='Release'">None</DebugType>
     <PackageId>ResonitePlatformSpoof</PackageId>
+    <Version>2.0.1</Version>
+    <Title>ResonitePlatformSpoof</Title>
+    <PackageProjectUrl>https://github.com/isovel/ResonitePlatformSpoof</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/isovel/ResonitePlatformSpoof</RepositoryUrl>
+    <Company>isovel</Company>
+    <AssemblyVersion>2.0.1</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>S:\SteamLibrary\steamapps\common\Resonite\rml_libs\0Harmony.dll</HintPath>
+      <HintPath>$(ResonitePath)rml_libs/0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Elements.Core">
-      <HintPath>S:\SteamLibrary\steamapps\common\Resonite\Resonite_Data\Managed\Elements.Core.dll</HintPath>
+      <HintPath>$(ResonitePath)Resonite_Data/Managed/Elements.Core.dll</HintPath>
     </Reference>
     <Reference Include="FrooxEngine">
-      <HintPath>S:\SteamLibrary\steamapps\common\Resonite\Resonite_Data\Managed\FrooxEngine.dll</HintPath>
+      <HintPath>$(ResonitePath)Resonite_Data/Managed/FrooxEngine.dll</HintPath>
     </Reference>
     <Reference Include="ResoniteModLoader">
-      <HintPath>S:\SteamLibrary\steamapps\common\Resonite\Libraries\ResoniteModLoader.dll</HintPath>
+      <HintPath>$(ResonitePath)Libraries/ResoniteModLoader.dll</HintPath>
     </Reference>
   </ItemGroup>
 

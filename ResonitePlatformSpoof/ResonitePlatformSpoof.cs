@@ -9,18 +9,18 @@ namespace ResonitePlatformSpoof
     public class ResonitePlatformSpoof : ResoniteMod
     {
         public override string Name => "ResonitePlatformSpoof";
-        public override string Author => "isovel + runtime";
-        public override string Version => "2.0.0";
+        public override string Author => "isovel, runtime";
+        public override string Version => "2.0.1";
         public override string Link => "https://github.com/isovel/ResonitePlatformSpoof";
 
         private static FieldInfo _userInitializingEnabled;
         private static ModConfiguration _config;
 
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<bool> ENABLED = new ModConfigurationKey<bool>("enabled", "Enable platform spoofing in new sessions you join", () => true);
+        private static readonly ModConfigurationKey<bool> Enabled = new ModConfigurationKey<bool>("enabled", "Enable platform spoofing in new sessions you join", () => true);
 
         [AutoRegisterConfigKey]
-        private static readonly ModConfigurationKey<Platform> TARGET_PLATFORM = new ModConfigurationKey<Platform>("spoofed platform", "This will appear as your platform in new sessions you join", () => Platform.Windows);
+        private static readonly ModConfigurationKey<Platform> TargetPlatform = new ModConfigurationKey<Platform>("spoofed platform", "This will appear as your platform in new sessions you join", () => Platform.Windows);
 
         public override void DefineConfiguration(ModConfigurationDefinitionBuilder builder)
         {
@@ -51,12 +51,12 @@ namespace ResonitePlatformSpoof
         {
             private static void Prefix(ref SyncMessage message)
             {
-                if (_config.GetValue(ENABLED) && message is ControlMessage { ControlMessageType: ControlMessage.Message.JoinRequest } controlMessage)
+                if (_config.GetValue(Enabled) && message is ControlMessage { ControlMessageType: ControlMessage.Message.JoinRequest } controlMessage)
                 {
                     Platform oldPlatform = Platform.Other;
                     if (controlMessage.Data.TryExtract("Platform", ref oldPlatform))
                     {
-                        Platform newPlatform = _config.GetValue(TARGET_PLATFORM);
+                        Platform newPlatform = _config.GetValue(TargetPlatform);
                         controlMessage.Data.AddOrUpdate("Platform", newPlatform);
                         Msg($"Spoofed join platform from {oldPlatform} to {newPlatform}");
                     }
@@ -69,12 +69,12 @@ namespace ResonitePlatformSpoof
         {
             private static void Postfix(ref User __result)
             {
-                if (!_config.GetValue(ENABLED)) return;
+                if (!_config.GetValue(Enabled)) return;
                 
                 Platform oldPlatform = __result.Platform;
                 bool oldInitializingEnabled = (bool)_userInitializingEnabled.GetValue(__result);
                 _userInitializingEnabled.SetValue(__result, true);
-                __result.Platform = _config.GetValue(TARGET_PLATFORM);
+                __result.Platform = _config.GetValue(TargetPlatform);
                 _userInitializingEnabled.SetValue(__result, oldInitializingEnabled);
                 Msg($"Spoofed host platform from {oldPlatform} to {__result.Platform}");
             }

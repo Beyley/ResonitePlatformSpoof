@@ -46,7 +46,7 @@ namespace ResonitePlatformSpoof
             Msg("Hooks installed successfully!");
         }
 
-        [HarmonyPatch(typeof(Session), nameof(Session.EnqueueForTransmission), new Type[] { typeof(SyncMessage), typeof(bool) })]
+        [HarmonyPatch(typeof(SessionOutgoingMessageManager), "EnqueueForTransmission", new Type[] { typeof(SyncMessage), typeof(bool), typeof(bool) })]
         private static class ClientPatch
         {
             private static void Prefix(ref SyncMessage message)

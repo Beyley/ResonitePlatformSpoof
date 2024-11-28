@@ -9,7 +9,7 @@ namespace ResonitePlatformSpoof
     public class ResonitePlatformSpoof : ResoniteMod
     {
         public override string Name => "ResonitePlatformSpoof";
-        public override string Author => "isovel, runtime";
+        public override string Author => "isovel, runtime, Lyris";
         public override string Version => "2.0.1";
         public override string Link => "https://github.com/isovel/ResonitePlatformSpoof";
 
@@ -22,10 +22,13 @@ namespace ResonitePlatformSpoof
         [AutoRegisterConfigKey]
         private static readonly ModConfigurationKey<Platform> TargetPlatform = new ModConfigurationKey<Platform>("spoofed platform", "This will appear as your platform in new sessions you join", () => Platform.Windows);
 
+        [AutoRegisterConfigKey]
+        private static readonly ModConfigurationKey<HeadOutputDevice> TargetHeadOutputDevice = new ModConfigurationKey<HeadOutputDevice>("spoofed head output device", "This will appear as your head output device in new sessions you join", () => HeadOutputDevice.SteamVR);
+
         public override void DefineConfiguration(ModConfigurationDefinitionBuilder builder)
         {
             builder
-                .Version(new Version(1, 0, 0)) // manually set config version (default is 1.0.0)
+                .Version(new Version(1, 1, 0)) // manually set config version (default is 1.0.0)
                 .AutoSave(false); // don't autosave on Resonite shutdown (default is true)
         }
 
@@ -60,6 +63,14 @@ namespace ResonitePlatformSpoof
                         controlMessage.Data.AddOrUpdate("Platform", newPlatform);
                         Msg($"Spoofed join platform from {oldPlatform} to {newPlatform}");
                     }
+
+                    HeadOutputDevice oldHeadOutputDevice = HeadOutputDevice.UNKNOWN;
+                    if (controlMessage.Data.TryExtract("HeadDevice", ref oldHeadOutputDevice))
+                    {
+                        HeadOutputDevice newHeadOutputDevice = _config.GetValue(TargetHeadOutputDevice);
+                        controlMessage.Data.AddOrUpdate("HeadDevice", newHeadOutputDevice);
+                        Msg($"Spoofed join head output device from {oldHeadOutputDevice} to {newHeadOutputDevice}");
+                    }
                 }
             }
         }
@@ -72,11 +83,14 @@ namespace ResonitePlatformSpoof
                 if (!_config.GetValue(Enabled)) return;
                 
                 Platform oldPlatform = __result.Platform;
+                HeadOutputDevice oldHeadOutputDevice = __result.HeadDevice;
                 bool oldInitializingEnabled = (bool)_userInitializingEnabled.GetValue(__result);
                 _userInitializingEnabled.SetValue(__result, true);
                 __result.Platform = _config.GetValue(TargetPlatform);
+                __result.HeadDevice = _config.GetValue(TargetHeadOutputDevice);
                 _userInitializingEnabled.SetValue(__result, oldInitializingEnabled);
                 Msg($"Spoofed host platform from {oldPlatform} to {__result.Platform}");
+                Msg($"Spoofed host head output device from {oldHeadOutputDevice} to {__result.HeadDevice}");
             }
         }
     }
